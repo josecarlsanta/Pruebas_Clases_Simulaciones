@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Desplegar en GitHub Pages
 
 on:
   push:
@@ -15,37 +15,37 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  compilar-y-desplegar:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.despliegue.outputs.page_url }}
     steps:
-      - name: Checkout
+      - name: Obtener código del repositorio
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Instalar dependencias
         run: npm install
 
-      - name: Build
+      - name: Compilar proyecto
         run: npm run build
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
-      - name: Setup Pages
+      - name: Configurar GitHub Pages
         uses: actions/configure-pages@v4
 
-      - name: Upload artifact
+      - name: Subir archivos compilados
         uses: actions/upload-pages-artifact@v3
         with:
           path: './dist'
 
-      - name: Deploy to GitHub Pages
-        id: deployment
+      - name: Desplegar en GitHub Pages
+        id: despliegue
         uses: actions/deploy-pages@v4
