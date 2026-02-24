@@ -1,11 +1,16 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const API_KEY = process.env.API_KEY;
 
 export const getExplanation = async (voltage: number, resistance: number): Promise<string> => {
+  if (!API_KEY) {
+    return "🔑 El botón de IA necesita una clave de API configurada. El simulador funciona perfectamente sin ella.";
+  }
+
   try {
+    const ai = new GoogleGenAI({ apiKey: API_KEY });
     const current = (voltage / resistance).toFixed(2);
-    
+
     const prompt = `
       Imagina que eres un profesor de física divertido y amigable para niños.
       Explica qué está pasando en un circuito eléctrico con estos valores:
@@ -23,7 +28,7 @@ export const getExplanation = async (voltage: number, resistance: number): Promi
       model: 'gemini-3-flash-preview',
       contents: prompt,
       config: {
-        thinkingConfig: { thinkingBudget: 0 } // Fast response needed
+        thinkingConfig: { thinkingBudget: 0 }
       }
     });
 
